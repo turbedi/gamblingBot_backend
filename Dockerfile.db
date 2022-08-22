@@ -1,0 +1,4 @@
+FROM postgres:14.5
+ENV POSTGRES_PASSWORD test
+ENV POSTGRES_DB gamblingbot_db
+COPY ./create_table.sql /docker-entrypoint-initdb.d/
