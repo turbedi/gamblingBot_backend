@@ -76,4 +76,11 @@ function getGroupRanking(groupId) {
     )
 }
 
-module.exports = { winningPlay, getWins, getGroupWinsOfPlayer, getGroupRanking };
+const checkUrlQuery = function(urlPath, queryObject) {
+    if (urlPath.pathname !== "/players/play" || queryObject.playerId === undefined || queryObject.groupId === undefined || queryObject.name === undefined || queryObject.playValue === undefined) {
+        return false;
+    }
+    return true;
+}
+
+module.exports = { winningPlay, getWins, getGroupWinsOfPlayer, getGroupRanking, checkUrlQuery };
