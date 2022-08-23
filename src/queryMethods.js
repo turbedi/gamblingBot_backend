@@ -1,13 +1,11 @@
 function winningPlay(playerId, groupId, name) {
-    var playerIdInt = parseInt(playerId);
-    var groupIdInt = parseInt(groupId);
     const fullQuery =
     `DO $$
     BEGIN
-    IF EXISTS (SELECT * FROM main2 WHERE playerid = ${playerIdInt} AND groupid = ${groupIdInt}) THEN
-        UPDATE main2 SET wincount = wincount + 1, name = '${name}' WHERE playerid = ${playerIdInt} AND groupid = ${groupIdInt};
+    IF EXISTS (SELECT * FROM main2 WHERE playerid = ${playerId} AND groupid = ${groupId}) THEN
+        UPDATE main2 SET wincount = wincount + 1, name = '${name}' WHERE playerid = ${playerId} AND groupid = ${groupId};
     ELSE
-        INSERT INTO main2(name, wincount, playerid, groupid) VALUES ('${name}', 1, ${playerIdInt}, ${groupIdInt});
+        INSERT INTO main2(name, wincount, playerid, groupid) VALUES ('${name}', 1, ${playerId}, ${groupId});
     END IF;
     END $$`
     pool.query(
@@ -22,11 +20,9 @@ function winningPlay(playerId, groupId, name) {
 }
 
 function getWins(playerId, groupId) {
-    var playerIdInt = parseInt(playerId);
-    var groupIdInt = parseInt(groupId);
     const getWinQuery = 
     `
-    SELECT wincount FROM main2 WHERE playerid = ${playerIdInt} AND groupid = ${groupIdInt}
+    SELECT wincount FROM main2 WHERE playerid = ${playerId} AND groupid = ${groupId}
     `
     pool.query(
         getWinQuery, (err, res) => {
@@ -41,10 +37,9 @@ function getWins(playerId, groupId) {
 }
 
 function getGroupWinsOfPlayer(playerId) {
-    var playerIdInt = parseInt(playerId);
     const getGroupWithMostWinsQuery =
     `
-    SELECT groupid, wincount FROM main2 WHERE playerid = ${playerIdInt} ORDER BY groupid DESC;
+    SELECT groupid, wincount FROM main2 WHERE playerid = ${playerId} ORDER BY groupid DESC;
     `
     pool.query(
         getGroupWithMostWinsQuery, (err, res) => {
@@ -59,10 +54,9 @@ function getGroupWinsOfPlayer(playerId) {
 }
 
 function getGroupRanking(groupId) {
-    var groupIdInt = parseInt(groupId);
     const getGroupRankingQuery = 
     `
-    SELECT playerid, wincount FROM main2 WHERE groupid = ${groupIdInt} ORDER BY wincount DESC;
+    SELECT playerid, wincount FROM main2 WHERE groupid = ${groupId} ORDER BY wincount DESC;
     `
     pool.query(
         getGroupRankingQuery, (err, res) => {
