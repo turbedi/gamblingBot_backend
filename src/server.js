@@ -7,35 +7,28 @@ const port = 8080;
 
 const requestListener = function (req, res) {
     var urlPath = url.parse(req.url, true);
-    //console.log(urlPath.query);
     var urlQuery = urlPath.query;
-    if (checkPathStart(urlPath.pathname) === true) {
-        console.log("Request with correct path start");
-    }
-    else {
-        console.log(`Wrong path: ${urlPath.path}`);
+    const queryObject = {
+        playerId: urlQuery.playerId,
+        groupId: urlQuery.groupId,
+        name: urlQuery.name,
+        playValue: urlQuery.playValue
+    };
+    
+    if (checkUrlQuery(urlPath, queryObject) === false) {
+        console.log(`Wrong URL query: ${urlPath.path}`);
         res.writeHead(400);
-        res.end("Wrong path");
-        return;
-    }
-    //console.log(urlQuery);
-    if (checkQuery(urlQuery) === false) {
-        console.log(`Wrong query: ${urlPath.path}`)
-        res.writeHead(400);
-        res.end("Wrong query");
+        res.end("Wrong URL query");
         return;
     }
 
-    var playerId = urlQuery.playerId;
-    var groupId = urlQuery.groupId;
-    var name = urlQuery.name;
-    var playValue = parseInt(urlQuery.playValue);
-    if (playValue === 1 || playValue === 22 || playValue === 42 || playValue === 64) { // Winning values
+    var playValueInt = parseInt(urlQuery.playValue);
+    if (playValueInt === 1 || playValueInt === 22 || playValueInt === 42 || playValueInt === 64) { // Winning values
         //GEWONNEN
-        queries.winningPlay(playerId, groupId, name);
-        queries.getWins(playerId, groupId);
-        queries.getGroupWinsOfPlayer(playerId);
-        queries.getGroupRanking(groupId);
+        queries.winningPlay(queryObject.playerId, queryObject.groupId, queryObject.name);
+        queries.getWins(queryObject.playerId, queryObject.groupId);
+        queries.getGroupWinsOfPlayer(queryObject.playerId);
+        queries.getGroupRanking(queryObject.groupId);
 
         console.log('------------\n');   
     }
@@ -46,21 +39,12 @@ const requestListener = function (req, res) {
 
 const server = http.createServer(requestListener);
 server.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port}`)
+    console.log(`Server is running on http://${host}:${port}`);
     connectToDB();
 });
 
-const checkPathStart = function(urlPath) {
-    return urlPath === "/players/play";
-}
-
-const checkQuery = function(urlQuery) {
-    var playerId = urlQuery.playerId;
-    var groupId = urlQuery.groupId;
-    var name = urlQuery.name;
-    var playValue = urlQuery.playValue;
-    if (playerId === undefined || groupId === undefined || name === undefined || playValue === undefined) {
-        console.log("Undefined")
+const checkUrlQuery = function(urlPath, queryObject) {
+    if (urlPath.pathname !== "/players/play" || queryObject.playerId === undefined || queryObject.groupId === undefined || queryObject.name === undefined || queryObject.playValue === undefined) {
         return false;
     }
     return true;
