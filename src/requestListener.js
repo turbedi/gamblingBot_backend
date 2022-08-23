@@ -25,7 +25,6 @@ const requestListener = function (req, res) {
         queries.getWins(queryObject.playerId, queryObject.groupId);
         queries.getGroupWinsOfPlayer(queryObject.playerId);
         queries.getGroupRanking(queryObject.groupId);
-
         console.log('------------\n');   
     }
 
