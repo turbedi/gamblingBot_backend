@@ -20,12 +20,14 @@ const requestListener = function (req, res) {
 
     var playValueInt = parseInt(urlQuery.playValue);
     if (playValueInt === 1 || playValueInt === 22 || playValueInt === 42 || playValueInt === 64) { // Winning values
-        //GEWONNEN
+        console.log('Gewonnen!!');
         queries.winningPlay(queryObject.playerId, queryObject.groupId, queryObject.name);
         queries.getWins(queryObject.playerId, queryObject.groupId);
         queries.getGroupWinsOfPlayer(queryObject.playerId);
         queries.getGroupRanking(queryObject.groupId);
         console.log('------------\n');   
+    } else {
+        console.log('Verloren :(');
     }
 
     res.writeHead(200);
